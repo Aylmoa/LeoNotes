@@ -1,5 +1,8 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+
+import { ref } from 'vue'
+
+const appTitle = ref('My App Layout')
 </script>
 
 <template>
