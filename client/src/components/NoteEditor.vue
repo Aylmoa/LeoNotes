@@ -1,49 +1,45 @@
 <template>
-  <div class="flex-1 flex flex-col bg-white overflow-hidden">
+  <div class="flex-1 flex flex-col bg-base-900 overflow-hidden">
 
     <!-- Editor header -->
-    <div class="px-8 pt-8 pb-4 border-b border-gray-100">
-
-      <!-- Title -->
+    <div class="px-10 pt-10 pb-5 border-b border-base-700">
       <input
         v-model="localTitle"
         @input="scheduleAutosave"
         type="text"
         placeholder="Untitled"
-        class="w-full text-2xl font-bold text-gray-800 placeholder-gray-300 focus:outline-none bg-transparent"
+        class="w-full text-3xl font-bold text-white placeholder-base-500 focus:outline-none bg-transparent"
       />
 
-      <!-- Category selector -->
-      <div class="flex items-center gap-3 mt-3">
+      <div class="flex items-center gap-3 mt-4">
         <select
           v-model="localCategoryId"
           @change="scheduleAutosave"
-          class="text-xs text-gray-500 border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+          class="text-xs text-base-300 bg-base-700 border border-base-500 rounded-lg px-3 py-1.5 focus:outline-none focus:border-violet-500 transition cursor-pointer"
         >
           <option :value="null">No category</option>
-          <option
-            v-for="cat in categories"
-            :key="cat.id"
-            :value="cat.id"
-          >
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id">
             {{ cat.name }}
           </option>
         </select>
 
-        <!-- Autosave indicator -->
-        <span class="text-xs text-gray-300">
+        <span
+          v-if="saveStatus"
+          class="text-xs text-violet-400 flex items-center gap-1"
+        >
+          <span v-if="saveStatus === 'Saving...'">⟳</span>
+          <span v-else>✓</span>
           {{ saveStatus }}
         </span>
       </div>
-
     </div>
 
-    <!-- Content area -->
+    <!-- Content -->
     <textarea
       v-model="localContent"
       @input="scheduleAutosave"
       placeholder="Start writing..."
-      class="flex-1 px-8 py-6 text-gray-700 text-sm leading-relaxed resize-none focus:outline-none placeholder-gray-300"
+      class="flex-1 px-10 py-8 text-base-300 text-sm leading-relaxed resize-none focus:outline-none placeholder-base-500 bg-transparent"
     />
 
   </div>
@@ -65,7 +61,6 @@ const localCategoryId = ref(props.note.categoryId)
 const saveStatus      = ref('')
 let   autosaveTimer   = null
 
-// Sync cuando cambia la nota seleccionada
 watch(() => props.note, (newNote) => {
   localTitle.value      = newNote.title
   localContent.value    = newNote.content
@@ -82,8 +77,8 @@ const scheduleAutosave = () => {
       content:    localContent.value,
       categoryId: localCategoryId.value,
     })
-    saveStatus.value = 'Saved ✓'
+    saveStatus.value = 'Saved'
     setTimeout(() => (saveStatus.value = ''), 2000)
-  }, 800) // guarda 800ms después de que el usuario deja de escribir
+  }, 800)
 }
 </script>

@@ -1,30 +1,28 @@
 <template>
-  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+  <aside class="w-64 bg-base-800 border-r border-base-600 flex flex-col">
 
     <!-- Logo -->
-    <div class="px-6 py-5 border-b border-gray-200">
-      <h2 class="text-xl font-bold text-indigo-600">📝 Notely</h2>
+    <div class="px-6 py-5 border-b border-base-600">
+      <h2 class="text-lg font-bold gradient-text tracking-tight">✦ Notely</h2>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 px-4 py-4 overflow-y-auto space-y-1">
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
 
-      <!-- All notes -->
       <button
         @click="$emit('select-category', null)"
         :class="[
-          'w-full text-left px-3 py-2 rounded-lg text-sm transition',
+          'w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center gap-2',
           !selectedCategory
-            ? 'bg-indigo-50 text-indigo-700 font-medium'
-            : 'text-gray-600 hover:bg-gray-100'
+            ? 'bg-violet-500/15 text-violet-300 font-medium'
+            : 'text-base-400 hover:bg-base-600 hover:text-white'
         ]"
       >
-        All Notes
+        <span class="text-base">◈</span> All Notes
       </button>
 
-      <!-- Categories -->
-      <div class="pt-4">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
+      <div class="pt-5">
+        <p class="text-xs font-semibold text-base-400 uppercase tracking-widest px-3 mb-2">
           Categories
         </p>
 
@@ -33,16 +31,17 @@
           :key="category.id"
           @click="$emit('select-category', category)"
           :class="[
-            'w-full text-left px-3 py-2 rounded-lg text-sm transition',
+            'w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center gap-2',
             selectedCategory?.id === category.id
-              ? 'bg-indigo-50 text-indigo-700 font-medium'
-              : 'text-gray-600 hover:bg-gray-100'
+              ? 'bg-violet-500/15 text-violet-300 font-medium'
+              : 'text-base-400 hover:bg-base-600 hover:text-white'
           ]"
         >
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0"></span>
           {{ category.name }}
         </button>
 
-        <!-- New category input -->
+        <!-- New category -->
         <div v-if="addingCategory" class="mt-2 px-1">
           <input
             v-model="newCategoryName"
@@ -51,18 +50,18 @@
             ref="categoryInput"
             type="text"
             placeholder="Category name..."
-            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full bg-base-700 border border-base-500 rounded-lg px-3 py-2 text-sm text-white placeholder-base-400 focus:outline-none focus:border-violet-500 transition"
           />
           <div class="flex gap-2 mt-2">
             <button
               @click="submitCategory"
-              class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium py-1.5 rounded-lg transition"
+              class="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium py-1.5 rounded-lg transition"
             >
               Add
             </button>
             <button
               @click="addingCategory = false"
-              class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium py-1.5 rounded-lg transition"
+              class="flex-1 bg-base-600 hover:bg-base-500 text-base-300 text-xs font-medium py-1.5 rounded-lg transition"
             >
               Cancel
             </button>
@@ -72,7 +71,7 @@
         <button
           v-else
           @click="startAddingCategory"
-          class="w-full text-left px-3 py-2 text-sm text-gray-400 hover:text-indigo-600 transition"
+          class="w-full text-left px-3 py-2 text-sm text-base-400 hover:text-violet-400 transition mt-1"
         >
           + Add category
         </button>
@@ -80,18 +79,18 @@
 
     </nav>
 
-    <!-- User + logout -->
-    <div class="px-4 py-4 border-t border-gray-200">
+    <!-- User -->
+    <div class="px-4 py-4 border-t border-base-600">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 min-w-0">
-          <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
             {{ userInitial }}
           </div>
-          <span class="text-sm text-gray-700 truncate">{{ authStore.user?.name }}</span>
+          <span class="text-sm text-base-300 truncate">{{ authStore.user?.name }}</span>
         </div>
         <button
           @click="$emit('logout')"
-          class="text-xs text-gray-400 hover:text-red-500 transition shrink-0 ml-2"
+          class="text-xs text-base-400 hover:text-red-400 transition shrink-0 ml-2"
         >
           Logout
         </button>
@@ -105,17 +104,17 @@
 import { ref, computed, nextTick } from 'vue'
 import { useAuthStore } from '../stores/auth.store.js'
 
-const props = defineProps({
+defineProps({
   categories:       { type: Array,  default: () => [] },
   selectedCategory: { type: Object, default: null },
 })
 
-//defineEmits(['select-category', 'create-category', 'logout'])
+const emit = defineEmits(['select-category', 'create-category', 'logout'])
 
-const authStore        = useAuthStore()
-const addingCategory   = ref(false)
-const newCategoryName  = ref('')
-const categoryInput    = ref(null)
+const authStore       = useAuthStore()
+const addingCategory  = ref(false)
+const newCategoryName = ref('')
+const categoryInput   = ref(null)
 
 const userInitial = computed(() =>
   authStore.user?.name?.charAt(0).toUpperCase() ?? '?'
@@ -135,7 +134,4 @@ const submitCategory = () => {
   addingCategory.value  = false
   newCategoryName.value = ''
 }
-
-// necesitamos emit para usarlo en submitCategory
-const emit = defineEmits(['select-category', 'create-category', 'logout'])
 </script>
